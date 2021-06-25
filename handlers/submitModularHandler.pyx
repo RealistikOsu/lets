@@ -136,6 +136,7 @@ class handler(requestsManager.asyncRequestHandler):
 			try:
 				failTime = max(0, int(self.get_argument("ft", 0)))
 			except ValueError:
+				log.error(f"Score Submit: User submitted incorrect failtime {self.get_argument('ft', None)}")
 				raise exceptions.invalidArgumentsException(MODULE_NAME)
 			failed = not quit_ and failTime > 0
 
