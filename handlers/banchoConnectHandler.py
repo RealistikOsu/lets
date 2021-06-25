@@ -46,9 +46,6 @@ class handler(requestsManager.asyncRequestHandler):
 			log.info("{} ({}) wants to connect".format(username, userID))
 			if not verify_password(userID, password):
 				raise exceptions.loginFailedException(MODULE_NAME, username)
-			if not userUtils.checkBanchoSession(userID, ip):
-				raise exceptions.noBanchoSessionException(MODULE_NAME, username, ip)
-
 			# Ban check
 			if userUtils.isBanned(userID):
 				raise exceptions.userBannedException(MODULE_NAME, username)
@@ -61,7 +58,7 @@ class handler(requestsManager.asyncRequestHandler):
 			userUtils.updateLatestActivity(userID)
 
 			# Get country and output it
-			country = glob.db.fetch("SELECT country FROM users_stats WHERE id = %s", [userID])["country"]
+			country = glob.db.fetch("SELECT country FROM users_stats WHERE id = %s", (userID,))["country"]
 			self.write(country)
 		except exceptions.invalidArgumentsException:
 			pass

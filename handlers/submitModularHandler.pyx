@@ -151,12 +151,14 @@ class handler(requestsManager.asyncRequestHandler):
 			aeskey = "osu!-scoreburgr---------{}".format(self.get_argument("osuver"))
 
 			if not requestsManager.checkArguments(self.request.arguments, ["score", "iv", "pass", "st", "x"]):
+				log.error("Score submit ERR: Incorrect args sent!")
 				raise exceptions.invalidArgumentsException(MODULE_NAME)
 
 			# Get score data
 			log.debug("Decrypting score data...")
 			scoreData = aeshelper.decryptRinjdael(aeskey, iv, scoreDataEnc, True).split(":")
 			if len(scoreData) < 16 or len(scoreData[0]) != 32:
+				log.error("Score submit ERR: Score data sent is weird.")
 				return
 			username = scoreData[1].strip()
 
@@ -164,6 +166,7 @@ class handler(requestsManager.asyncRequestHandler):
 			userID = userUtils.getID(username)
 			# User exists check
 			if userID == 0:
+				log.error("Score submit ERR: User not found!")
 				raise exceptions.loginFailedException(MODULE_NAME, userID)
 				
 			 # Score submission lock check
@@ -180,20 +183,21 @@ class handler(requestsManager.asyncRequestHandler):
 				
 			# Bancho session/username-pass combo check
 			if not verify_password(userID, password): # What
+				log.error("Score submit ERR: Password verification failed!")
 				raise exceptions.loginFailedException(MODULE_NAME, username)
 
 			# Generic bancho session check
 			if not userUtils.checkBanchoSession(userID):
+				log.error("Score submit ERR: User has no bancho session available!")
 				raise exceptions.noBanchoSessionException(MODULE_NAME, username, ip)
 			# Privilege checks using a singular query rather than 2 for the same thing.
 			u_privs = userUtils.getPrivileges(userID)
 			banned = not u_privs & privileges.USER_NORMAL
 			restricted = not u_privs & privileges.USER_PUBLIC
 
-			if banned: raise exceptions.userBannedException(MODULE_NAME, username)
-			# Data length check
-			if len(scoreData) < 16:
-				raise exceptions.invalidArgumentsException(MODULE_NAME)
+			if banned:
+				log.error("Score submit ERR: User is banned!")
+				raise exceptions.userBannedException(MODULE_NAME, username)
 
 			# Get variables for relax
 			used_mods = int(scoreData[13])
@@ -244,7 +248,7 @@ class handler(requestsManager.asyncRequestHandler):
 
 			# Check if the ranked status is allowed
 			if beatmapInfo.rankedStatus not in glob.conf.extra["_allowed_beatmap_rank"]:
-				log.debug("Beatmap's rankstatus is not allowed to be submitted. Score submission aborted.")
+				log.info(f"The ranked status for beatmap {s.fileMd5} is not ranked! Ignoring score!")
 				return
 
 			# Set play time and full play time
