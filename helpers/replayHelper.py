@@ -17,6 +17,7 @@ def buildFullReplay(scoreID=None, scoreData=None, rawReplay=None):
         raise AttributeError("Either scoreID or scoreData must be provided, not neither or both")
 
     if scoreID:
+        scoreID = int(scoreID)
         if RELAX_OFFSET < scoreID < AP_OFFSET:
             table_suffix = RX_SUFFIX
         elif scoreID > AP_OFFSET:
