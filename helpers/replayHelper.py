@@ -2,18 +2,39 @@ import os
 
 from common import generalUtils
 from constants import exceptions, dataTypes
+from common.constants import mods
 from helpers import binaryHelper, generalHelper
 from objects import glob
+
+RELAX_OFFSET = 1073741823
+AP_OFFSET = 2000000000
+RX_SUFFIX = "_relax"
+AP_SUFFIX = "_ap"
+VN_SUFFIX = ""
 
 def buildFullReplay(scoreID=None, scoreData=None, rawReplay=None):
     if all(v is None for v in (scoreID, scoreData)) or all(v is not None for v in (scoreID, scoreData)):
         raise AttributeError("Either scoreID or scoreData must be provided, not neither or both")
 
+    if scoreID:
+        if RELAX_OFFSET < scoreID < AP_OFFSET:
+            table_suffix = RX_SUFFIX
+        elif scoreID > AP_OFFSET:
+            table_suffix = AP_SUFFIX
+        else: table_suffix = VN_SUFFIX
+    # Use mods value.
+    else:
+        if (replay_mods := int(scoreData["mods"])) & mods.RELAX:
+            table_suffix = RX_SUFFIX
+        elif replay_mods & mods.RELAX2:
+            table_suffix = AP_SUFFIX
+        else: table_suffix = VN_SUFFIX
+
     if scoreData is None:
         scoreData = glob.db.fetch(
-            "SELECT scores.*, users.username FROM scores LEFT JOIN users ON scores.userid = users.id "
-            "WHERE scores.id = %s",
-            [scoreID]
+            f"SELECT scores{table_suffix}.*, users.username FROM scores{table_suffix} LEFT JOIN users ON scores{table_suffix}.userid = users.id "
+            f"WHERE scores{table_suffix}.id = %s",
+            (scoreID,)
         )
     else:
         scoreID = scoreData["id"]
@@ -22,7 +43,7 @@ def buildFullReplay(scoreID=None, scoreData=None, rawReplay=None):
 
     if rawReplay is None:
         # Make sure raw replay exists
-        fileName = "{}/replay_{}.osr".format(glob.conf.config["server"]["replayspath"], scoreID)
+        fileName = "{}{}/replay_{}.osr".format(glob.conf.config["server"]["replayspath"], table_suffix, scoreID)
         if not os.path.isfile(fileName):
             raise FileNotFoundError()
 

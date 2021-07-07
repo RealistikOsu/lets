@@ -38,8 +38,6 @@ from handlers import defaultHandler
 from handlers import downloadMapHandler
 from handlers import emptyHandler
 from handlers import getFullReplayHandler
-from handlers import getFullReplayHandlerRelax
-from handlers import getFullReplayHandlerAuto
 from handlers import getReplayHandler
 from handlers import getScoresHandler
 from handlers import getScreenshotHandler
@@ -90,8 +88,6 @@ def make_app():
 		(r"/d/(.*)", downloadMapHandler.handler),
 		(r"/s/(.*)", downloadMapHandler.handler),
 		(r"/web/replays/(.*)", getFullReplayHandler.handler),
-		(r"/web/replays_relax/(.*)", getFullReplayHandlerRelax.handler),
-		(r"/web/replays_auto/(.*)", getFullReplayHandlerAuto.handler),
 		(r"/web/errorlogs/(.*)", getFullErrorHandler.handler),
 
 		(r"/p/verify", redirectHandler.handler, dict(destination="https://ussr.pl/")),
