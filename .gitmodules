@@ -1,9 +1,6 @@
 [submodule "common"]
 	path = common
 	url = https://github.com/RealistikOsu/common.git
-[submodule "secret"]
-	path = secret
-	url = https://github.com/RealistikOsu/secret.git
 [submodule "pp/oppai-ng"]
 	path = pp/oppai-ng
 	url = https://github.com/Francesco149/oppai-ng.git
@@ -23,3 +20,6 @@
 [submodule "realistik"]
 	path = realistik
 	url = https://github.com/RealistikDash/rosu_priv
+[submodule "realistikcalc"]
+	path = realistikcalc
+	url = https://github.com/RealistikOsu/RealistikCalc

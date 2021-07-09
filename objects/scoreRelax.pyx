@@ -389,17 +389,44 @@ class score:
 		if b is None:
 			b = beatmap.beatmap(self.fileMd5, 0)
 
-		# Calculate pp
+		# Old ripple code LOL
+		"""
 		if b.rankedStatus in [rankedStatuses.RANKED, rankedStatuses.APPROVED, rankedStatuses.QUALIFIED] and b.rankedStatus != rankedStatuses.UNKNOWN \
-		and scoreUtils.isRankable(self.mods) and self.passed and self.gameMode in score.PP_CALCULATORS:
-			calculator = score.PP_CALCULATORS[self.gameMode](b, self)
-			self.pp = calculator.pp
-		elif glob.conf.extra["lets"]["submit"]["loved-dont-give-pp"] and b.rankedStatus == rankedStatuses.LOVED \
-		and scoreUtils.isRankable(self.mods) and self.passed and self.gameMode in score.PP_CALCULATORS:
-			self.pp = 0
-		elif not glob.conf.extra["lets"]["submit"]["loved-dont-give-pp"] and b.rankedStatus == rankedStatuses.LOVED \
-		and scoreUtils.isRankable(self.mods) and self.passed and self.gameMode in score.PP_CALCULATORS:
-			calculator = score.PP_CALCULATORS[self.gameMode](b, self)
-			self.pp = calculator.pp
+			and scoreUtils.isRankable(self.mods) and self.passed and self.gameMode in score.PP_CALCULATORS:
+				calculator = score.PP_CALCULATORS[self.gameMode](b, self)
+				self.pp = calculator.pp
+			elif glob.conf.extra["lets"]["submit"]["loved-dont-give-pp"] and b.rankedStatus == rankedStatuses.LOVED \
+			and scoreUtils.isRankable(self.mods) and self.passed and self.gameMode in score.PP_CALCULATORS:
+				self.pp = 0
+			elif not glob.conf.extra["lets"]["submit"]["loved-dont-give-pp"] and b.rankedStatus == rankedStatuses.LOVED \
+			and scoreUtils.isRankable(self.mods) and self.passed and self.gameMode in score.PP_CALCULATORS:
+				calculator = score.PP_CALCULATORS[self.gameMode](b, self)
+				self.pp = calculator.pp
+			else:
+				self.pp = 0
+		"""
+
+		if b.rankedStatus in (rankedStatuses.RANKED, rankedStatuses.APPROVED, rankedStatuses.QUALIFIED) and b.rankedStatus != rankedStatuses.UNKNOWN \
+		and scoreUtils.isRankable(self.mods):
+			map_path = mapsHelper.cachedMapPath(b.beatmapID)
+			mapsHelper.cacheMap(map_path, b)
+			if self.gameMode in (0, 1): # STD AND TAIKO
+				self.pp = score.PP_CALCULATORS[self.gameMode](b, self).pp
+			
+			elif self.gameMode == 2: # CATCH
+				calc = CalculatorCatch(
+					map_path,
+					self.accuracy*100,
+					self.maxCombo,
+					self.mods,
+					self.cMiss
+				)
+				calculated = calc.calc_catch()
+				self.pp = calculated.pp * 0.90 # nerf for relax lol.
+
+			else:
+				# Lets be honest how do you want to submit mania score on rx LOL
+				log.warning("No matching gamemode! - Realistik's stupid code.")
+
 		else:
 			self.pp = 0

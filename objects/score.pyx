@@ -16,7 +16,6 @@ from pp import cicciobello
 from realistikcalc.calc import CalculatorOsu, CalculatorMania, CalculatorCatch, CalculatorTaiko
 from helpers import mapsHelper
 
-
 class score:
 	PP_CALCULATORS = {
 		gameModes.STD: rippoppai.oppai,
@@ -27,7 +26,7 @@ class score:
 	__slots__ = ["scoreID", "playerName", "score", "maxCombo", "c50", "c100", "c300", "cMiss", "cKatu", "cGeki",
 				 "fullCombo", "mods", "playerUserID","rank","date", "hasReplay", "fileMd5", "passed", "playDateTime",
 				 "gameMode", "completed", "accuracy", "pp", "oldPersonalBest", "rankedScoreIncrease", "personalOldBestScore",
-				 "_playTime", "_fullPlayTime", "quit", "failed"]
+				 "_playTime", "_fullPlayTime", "quit", "failed", "sr"]
 	def __init__(self, scoreID = None, rank = None, setData = True):
 		"""
 		Initialize a (empty) score object.
@@ -62,6 +61,7 @@ class score:
 		self.accuracy = 0.00
 
 		self.pp = 0.00
+		self.sr = 0.00
 
 		self.oldPersonalBest = 0
 		self.rankedScoreIncrease = 0
@@ -396,7 +396,9 @@ class score:
 					self.maxCombo,
 					self.cMiss
 				)
-				self.pp = calc.calc_osu().pp
+				calculated = calc.calc_osu()
+				self.pp = calculated.pp
+				self.sr = calculated.stars
 			
 			elif self.gameMode == 1: # TAKIO
 				calc = CalculatorTaiko(
@@ -406,7 +408,9 @@ class score:
 					self.mods,
 					self.cMiss
 				)
-				self.pp = calc.calc_taiko().pp
+				calculated = calc.calc_taiko()
+				self.pp = calculated.pp
+				self.sr = calculated.stars
 			
 			elif self.gameMode == 2: # CATCH
 				calc = CalculatorCatch(
@@ -416,7 +420,9 @@ class score:
 					self.mods,
 					self.cMiss
 				)
-				self.pp = calc.calc_catch().pp
+				calculated = calc.calc_catch()
+				self.pp = calculated.pp
+				self.sr = calculated.stars
 			
 			elif self.gameMode == 3: # MAN NYA and I will regret this comment lmfao
 				calc = CalculatorMania(
@@ -424,7 +430,9 @@ class score:
 					self.mods,
 					self.score
 				)
-				self.pp = calc.calc_mania().pp
+				calculated = calc.calc_mania()
+				self.pp = calculated.pp
+				self.sr = calculated.stars
 			
 			else:
 				log.warning("No matching gamemode! - Realistik's stupid code.")

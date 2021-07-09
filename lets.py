@@ -59,7 +59,7 @@ from common import generalUtils
 from common import agpl
 from pubSubHandlers import beatmapUpdateHandler
 from pubSubHandlers import clanCacheRefresh
-import secret.achievements.utils
+from helpers.realistikh import fetch_achievements_db
 
 from helpers.clan_helper import ClanCache
 
@@ -253,7 +253,7 @@ if __name__ == "__main__":
 		# Load achievements
 		consoleHelper.printNoNl("Loading achievements... ")
 		try:
-			secret.achievements.utils.load_achievements()
+			fetch_achievements_db()
 		except Exception as e:
 			consoleHelper.printError()
 			consoleHelper.printColored(
@@ -264,6 +264,7 @@ if __name__ == "__main__":
 		consoleHelper.printDone()
 
 		# Set achievements version
+		glob.ACHIEVEMENTS_VERSION = 2
 		glob.redis.set("lets:achievements_version", glob.ACHIEVEMENTS_VERSION)
 		consoleHelper.printColored("Achievements version is {}".format(glob.ACHIEVEMENTS_VERSION), bcolors.YELLOW)
 

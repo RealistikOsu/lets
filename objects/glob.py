@@ -22,6 +22,7 @@ conf = None
 application = None
 pool = None
 pascoa = {}
+achievements = []
 
 debug = False
 sentry = False
