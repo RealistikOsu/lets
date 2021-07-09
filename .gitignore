@@ -10,4 +10,5 @@ common_refractor
 *.so
 *.log
 
+realistik/
 realistikcalc/ # Haha no calc for you
