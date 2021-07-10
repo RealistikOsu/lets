@@ -3,7 +3,7 @@ import tornado.web
 
 from common.ripple import userUtils
 from common.web import requestsManager
-from secret.discord_hooks import Webhook
+from helpers.discord_hooks import Webhook
 from objects import glob
 from helpers import generalHelper
 

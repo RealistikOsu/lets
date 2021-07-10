@@ -126,4 +126,4 @@ class Webhook:
 		headers = {'Content-Type': 'application/json'}
 		print("Posting a thing")
 
-		requests.post("https://discord.com/api/webhooks/820309070237007922/Ia2ONT1vXOiSOKUrrmFgF978olNW5HB7w_mkgURYka5RFeX11q9YTCFWDND_R4LPkUkg", data=self.json, headers=headers)
+		requests.post(self.url, data=self.json, headers=headers)

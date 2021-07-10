@@ -496,14 +496,14 @@ class handler(requestsManager.asyncRequestHandler):
             else:
                 _mode = s.gameMode
 
-            # At the end, check achievements
-            if s.passed and _mode >= 3:
-                new_achievements = []
+            # At the end, check achievements.
+            new_achievements = []
+            if s.passed and _mode <= 3:
                 db_achievements = [ ach["achievement_id"] for ach in glob.db.fetchAll("SELECT achievement_id FROM users_achievements WHERE user_id = %s", [userID]) ]
                 for ach in glob.achievements:
                     if ach.id in db_achievements:
                         continue
-                    if ach.cond(s, _mode, newUserStats['playcount']):
+                    if ach.cond(s, _mode, newUserStats):
                         userUtils.unlockAchievement(userID, ach.id)
                         new_achievements.append(ach.full_name)
 

@@ -1,5 +1,6 @@
 # A class I copy paste throughout pretty much my all projects lmfao.
 import time
+from objects.achievement import Achievement
 from objects import glob
 
 class Timer:
@@ -55,12 +56,11 @@ def fetch_achievements_db():
     # But for security reasons RealistikOsu will never share their database.
     achievements = glob.db.fetchAll("SELECT * FROM new_achievements")
     for achievement in achievements:
-        condition = eval(f"lambda score, mode_vn, playcount: {achievement.pop('cond')}")
+        condition = eval(f"lambda score, mode_vn, stats: {achievement.pop('cond')}")
         glob.achievements.append(Achievement(
             _id= achievement['id'],
             file= achievement['file'],
             name= achievement['name'],
             desc= achievement['desc'],
-            condition= condition
+            cond= condition
         ))
-    log.info(f"Loaded {len(glob.achievements)} new achievements to cache!")
