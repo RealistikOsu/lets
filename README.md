@@ -20,7 +20,7 @@ This server handles every non real time client feature, so:
 
 
 ## Requirements
-- Python 3.6
+- Python 3.9
 - Cython
 - C compiler
 
@@ -32,16 +32,16 @@ $ cd secret && git submodule init && git submodule update && cd ..
 ```
 Afterwards, install the required dependencies with pip
 ```
-$ python3.6 -m pip install -r requirements.txt
+$ python3.9 -m pip install -r requirements.txt
 ```
 Compile all `*.pyx` files to `*.so` or `*.dll` files using `setup.py` (distutils file).
 This compiles `catch-the-pp` as well.
 ```
-$ python3.6 setup.py build_ext --inplace
+$ python3.9 setup.py build_ext --inplace
 ```
 Then, run LETS once to create the default config file and edit it
 ```
-$ python3.6 lets.py
+$ python3.9 lets.py
 $ nano config.ini
 ```
 Finally, compile `oppai-ng` (inside pp/oppai-ng), `akatsuki-pp-relax` (inside pp/oppai-rx) and `oppai-ap` (autopilot pp) to make calculate PP.
