@@ -40,17 +40,17 @@ class handler(requestsManager.asyncRequestHandler):
 
         userID = userUtils.getID(username)
         if userID == 0:
-            return self.write("error: user is unknown")
+            return self.write("error: pass")
         if not verify_password(userID, password):
-            return self.write("error: youre the bad guy....")
+            return self.write("error: pass")
         if not userUtils.checkBanchoSession(userID, ip):
-            raise self.write("error: what if... we are the bad guys?")
+            return self.write("error: no")
         if not beatmap_ban or beatmap_ban and not beatmap_ban.startswith("a"):
             return self.write("-3")
 
         arguments_cheat = beatmap_ban[1:]
         if not arguments_cheat.isdigit():
-            return self.write("error: srsly?")
+            return self.write("error: no")
 
         arguments_cheat = int(arguments_cheat)
         # Let's try found something
