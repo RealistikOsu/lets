@@ -262,7 +262,7 @@ class handler(requestsManager.asyncRequestHandler):
             if s.passed and beatmapInfo.beatmapID < 100000000:
                 length = beatmapInfo.hitLength
             else:
-                length = failTime
+                length = failTime // 1000
             if UsingRelax:  
                 userUtils.incrementPlaytimeRX(userID, s.gameMode, length)
             elif UsingAutopilot:
